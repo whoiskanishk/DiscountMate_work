@@ -1,6 +1,8 @@
 .DS_Store
 Backend/node_modules
 Backend/.env
+Backend/logs
+Backend/uploads
 Frontend/node_modules
 Frontend/.expo
 .env

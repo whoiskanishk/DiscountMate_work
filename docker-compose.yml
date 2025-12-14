@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  mongo:
+    image: mongo:6.0
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: discountmate
+    ports:
+      - "27017:27017"
+
+  backend:
+    build: ./Backend
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - MONGO_URI=mongodb://mongo:27017/discountmate
+      - ALLOW_START_WITHOUT_DB=false
+    depends_on:
+      - mongo
+    volumes:
+      - ./Backend/uploads:/usr/src/app/uploads
+      - ./Backend/logs:/usr/src/app/logs
+    restart: unless-stopped
+
+  frontend:
+    build: ./Frontend
+    ports:
+      - "19006:19006"
+    environment:
+      - EXPO_DEVTOOLS_LISTEN_ADDRESS=0.0.0.0
+    depends_on:
+      - backend
+    command: yarn web
+    restart: unless-stopped
+
+volumes:
+  mongo-data:
